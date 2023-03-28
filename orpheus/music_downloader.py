@@ -273,12 +273,13 @@ class Downloader:
             #artist_name = label_info.albums[index].artists.name #ADDED THIS LINE
             #LabelInfo(label_name='Scott Sullivan', names=['Scott Sullivan', 'Scott Sullivan', 'Scott Sullivan'], albums=['hoak2xlwzetha', 'vc8yy71pyzqna', 'xi8jvww76oahc'], album_extra_kwargs={}, tracks=[], track_extra_kwargs={})
             artist_name = label_info.names[index-1]
+            artist_path = label_path = sanitise_name(artist_name) + '/'
 
             print(artist_name) #TESTING
 
             print()
             self.print(f'Album {index}/{number_of_albums}', drop_level=1)
-            tracks_downloaded += self.download_album(album_id, artist_name=artist_name, path=label_path, indent_level=2, extra_kwargs=label_info.album_extra_kwargs)
+            tracks_downloaded += self.download_album(album_id, artist_name=artist_name, path=artist_path, indent_level=2, extra_kwargs=label_info.album_extra_kwargs)
 
         self.set_indent_number(2)
         #skip_tracks = self.global_settings['artist_downloading']['separate_tracks_skip_downloaded']
@@ -288,7 +289,7 @@ class Downloader:
         for index, track_id in enumerate(tracks_to_download, start=1):
             print()
             self.print(f'Track {index}/{number_of_tracks_new}', drop_level=1)
-            self.download_track(track_id, album_location=label_path, main_artist=artist_name, number_of_tracks=1, indent_level=2, extra_kwargs=label_info.track_extra_kwargs)
+            self.download_track(track_id, album_location=artist_path, main_artist=artist_name, number_of_tracks=1, indent_level=2, extra_kwargs=label_info.track_extra_kwargs)
 
         self.set_indent_number(1)
         tracks_skipped = number_of_tracks - number_of_tracks_new
