@@ -1,5 +1,6 @@
 import logging, os, ffmpeg, sys
 import shutil
+import json
 import unicodedata
 from dataclasses import asdict
 from time import strftime, gmtime
@@ -269,7 +270,15 @@ class Downloader:
         self.set_indent_number(2)
         tracks_downloaded = []
         for index, album_id in enumerate(label_info.albums, start=1):
-            artist_name = label_info.albums[index].artists.name #ADDED THIS LINE
+            #artist_name = label_info.albums[index].artists.name #ADDED THIS LINE
+            artist_name = label_info.albums[index]
+
+            print(artist_name) #TESTING
+
+            json_object = json.dumps(artist_name, indent=4)
+            with open("artist_name.json", "w") as outfile:
+                outfile.write(json_object)
+
             print()
             self.print(f'Album {index}/{number_of_albums}', drop_level=1)
             tracks_downloaded += self.download_album(album_id, artist_name=artist_name, path=label_path, indent_level=2, extra_kwargs=label_info.album_extra_kwargs)
