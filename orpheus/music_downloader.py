@@ -249,7 +249,7 @@ class Downloader:
 
         return album_info.tracks
     def download_label(self, artist_id, extra_kwargs={}): #TODO
-        label_info: LabelInfo = self.service.get_label_info(label_id, self.global_settings['artist_downloading']['return_credited_albums'], **extra_kwargs)
+        label_info: LabelInfo = self.service.get_label_info(label_id, **extra_kwargs)
         label_name = label_info.name
 
     def download_artist(self, artist_id, extra_kwargs={}):
