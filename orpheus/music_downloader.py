@@ -254,12 +254,9 @@ class Downloader:
         label_info: LabelInfo = self.service.get_label_info(label_id, **extra_kwargs)
         label_name = label_info.name
         #label_name = label_info.
-
+        print(LabelInfo)
         print(label_info) #TESTING
 
-        json_object = json.dumps(LabelInfo, indent=4)
-        with open("LabelInfo.json", "w") as outfile:
-            outfile.write(json_object)
 
         self.set_indent_number(1)
 
