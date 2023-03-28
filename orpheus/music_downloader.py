@@ -252,7 +252,7 @@ class Downloader:
 
     def download_label(self, label_id, extra_kwargs={}): #TODO
         label_info: LabelInfo = self.service.get_label_info(label_id, **extra_kwargs)
-        label_name = label_info.name
+        label_name = label_info.label_name
         #label_name = label_info.
         #print(LabelInfo)
         print(label_info) #TESTING
