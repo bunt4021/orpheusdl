@@ -273,7 +273,7 @@ class Downloader:
             #artist_name = label_info.albums[index].artists.name #ADDED THIS LINE
             #LabelInfo(label_name='Scott Sullivan', names=['Scott Sullivan', 'Scott Sullivan', 'Scott Sullivan'], albums=['hoak2xlwzetha', 'vc8yy71pyzqna', 'xi8jvww76oahc'], album_extra_kwargs={}, tracks=[], track_extra_kwargs={})
             artist_name = label_info.names[index-1]
-            artist_path = label_path = sanitise_name(artist_name) + '/'
+            artist_path = label_path + sanitise_name(artist_name) + '/'
 
             print(artist_name) #TESTING
 
