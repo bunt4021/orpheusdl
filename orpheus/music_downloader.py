@@ -341,9 +341,9 @@ class Downloader:
         track_info: TrackInfo = self.service.get_track_info(track_id, quality_tier, codec_options, **extra_kwargs)
 
         print(track_info.error)
-        if not track_info.error
-            self.print('Track is not streamable, skipping', drop_level=1)
-            return
+        #if not track_info.error
+        #    self.print('Track is not streamable, skipping', drop_level=1)
+        #    return
 
         if main_artist.lower() not in [i.lower() for i in track_info.artists] and self.global_settings['advanced']['ignore_different_artists'] and self.download_mode is DownloadTypeEnum.artist:
            self.print('Track is not from the correct artist, skipping', drop_level=1)
