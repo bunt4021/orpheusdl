@@ -293,7 +293,7 @@ class Downloader:
         self.set_indent_number(1)
         tracks_skipped = number_of_tracks - number_of_tracks_new
         if tracks_skipped > 0: self.print(f'Tracks skipped: {tracks_skipped!s}', drop_level=1)
-        self.print(f'=== Artist {artist_name} downloaded ===', drop_level=1)
+        self.print(f'=== Label {label_name} downloaded ===', drop_level=1)
 
     def download_artist(self, artist_id, extra_kwargs={}):
         artist_info: ArtistInfo = self.service.get_artist_info(artist_id, self.global_settings['artist_downloading']['return_credited_albums'], **extra_kwargs)
