@@ -251,7 +251,7 @@ class Downloader:
 
     def download_label(self, label_id, extra_kwargs={}): #TODO
         label_info: LabelInfo = self.service.get_label_info(label_id, **extra_kwargs)
-        artist_name = label_info.name
+        label_name = label_info.name
         #label_name = label_info.
 
         self.set_indent_number(1)
@@ -260,27 +260,29 @@ class Downloader:
         number_of_tracks = len(label_info.tracks)
 
         #self.print(f'=== Downloading label {label_name} ({artist_id}) ===', drop_level=1)
-        self.print(f'=== Downloading artist {artist_name} ({artist_id}) ===', drop_level=1)
+        self.print(f'=== Downloading label {label_name} ({label_id}) ===', drop_level=1)
         if number_of_albums: self.print(f'Number of albums: {number_of_albums!s}')
         if number_of_tracks: self.print(f'Number of tracks: {number_of_tracks!s}')
         self.print(f'Service: {self.module_settings[self.service_name].service_name}')
-        artist_path = self.path + sanitise_name(artist_name) + '/'
+        label_path = self.path + sanitise_name(label_name) + '/'
 
         self.set_indent_number(2)
         tracks_downloaded = []
         for index, album_id in enumerate(label_info.albums, start=1):
+            artist_name = label_info.albums[index].artist.name #ADDED THIS LINE
             print()
             self.print(f'Album {index}/{number_of_albums}', drop_level=1)
-            tracks_downloaded += self.download_album(album_id, artist_name=artist_name, path=artist_path, indent_level=2, extra_kwargs=label_info.album_extra_kwargs)
+            tracks_downloaded += self.download_album(album_id, artist_name=artist_name, path=label_path, indent_level=2, extra_kwargs=label_info.album_extra_kwargs)
 
         self.set_indent_number(2)
-        skip_tracks = self.global_settings['artist_downloading']['separate_tracks_skip_downloaded']
-        tracks_to_download = [i for i in label_info.tracks if (i not in tracks_downloaded and skip_tracks) or not skip_tracks]
+        #skip_tracks = self.global_settings['artist_downloading']['separate_tracks_skip_downloaded']
+        #tracks_to_download = [i for i in label_info.tracks if (i not in tracks_downloaded and skip_tracks) or not skip_tracks]
+        tracks_to_download = [i for i in label_info.tracks if (i not in tracks_downloaded)]
         number_of_tracks_new = len(tracks_to_download)
         for index, track_id in enumerate(tracks_to_download, start=1):
             print()
             self.print(f'Track {index}/{number_of_tracks_new}', drop_level=1)
-            self.download_track(track_id, album_location=artist_path, main_artist=artist_name, number_of_tracks=1, indent_level=2, extra_kwargs=label_info.track_extra_kwargs)
+            self.download_track(track_id, album_location=label_path, main_artist=artist_name, number_of_tracks=1, indent_level=2, extra_kwargs=label_info.track_extra_kwargs)
 
         self.set_indent_number(1)
         tracks_skipped = number_of_tracks - number_of_tracks_new
