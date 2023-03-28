@@ -269,7 +269,7 @@ class Downloader:
         self.set_indent_number(2)
         tracks_downloaded = []
         for index, album_id in enumerate(label_info.albums, start=1):
-            artist_name = label_info.albums[index].artist.name #ADDED THIS LINE
+            artist_name = label_info.albums[index].artists.name #ADDED THIS LINE
             print()
             self.print(f'Album {index}/{number_of_albums}', drop_level=1)
             tracks_downloaded += self.download_album(album_id, artist_name=artist_name, path=label_path, indent_level=2, extra_kwargs=label_info.album_extra_kwargs)
