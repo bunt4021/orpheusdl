@@ -274,7 +274,8 @@ class Downloader:
         tracks_downloaded = []
         for index, album_id in enumerate(label_info.albums, start=1):
             #artist_name = label_info.albums[index].artists.name #ADDED THIS LINE
-            artist_name = label_info.albums[index]
+            #LabelInfo(label_name='Scott Sullivan', names=['Scott Sullivan', 'Scott Sullivan', 'Scott Sullivan'], albums=['hoak2xlwzetha', 'vc8yy71pyzqna', 'xi8jvww76oahc'], album_extra_kwargs={}, tracks=[], track_extra_kwargs={})
+            artist_name = label_info.names[index]
 
             print(artist_name) #TESTING
 
