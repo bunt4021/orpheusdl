@@ -340,7 +340,7 @@ class Downloader:
         )
         track_info: TrackInfo = self.service.get_track_info(track_id, quality_tier, codec_options, **extra_kwargs)
 
-        print(f'error{track_info.error}')
+        #print(f'error{track_info.error}')
         #if not track_info.error
         #    self.print('Track is not streamable, skipping', drop_level=1)
         #    return
