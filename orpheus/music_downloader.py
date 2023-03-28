@@ -255,6 +255,12 @@ class Downloader:
         label_name = label_info.name
         #label_name = label_info.
 
+        print(label_info) #TESTING
+
+        json_object = json.dumps(label_info, indent=4)
+        with open("label_info.json", "w") as outfile:
+            outfile.write(json_object)
+
         self.set_indent_number(1)
 
         number_of_albums = len(label_info.albums)
