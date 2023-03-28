@@ -257,8 +257,8 @@ class Downloader:
 
         print(label_info) #TESTING
 
-        json_object = json.dumps(label_info, indent=4)
-        with open("label_info.json", "w") as outfile:
+        json_object = json.dumps(LabelInfo, indent=4)
+        with open("LabelInfo.json", "w") as outfile:
             outfile.write(json_object)
 
         self.set_indent_number(1)
