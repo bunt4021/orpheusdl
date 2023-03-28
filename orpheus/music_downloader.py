@@ -253,10 +253,7 @@ class Downloader:
     def download_label(self, label_id, extra_kwargs={}): #TODO
         label_info: LabelInfo = self.service.get_label_info(label_id, **extra_kwargs)
         label_name = label_info.label_name
-        #label_name = label_info.
-        #print(LabelInfo)
         print(label_info) #TESTING
-
 
         self.set_indent_number(1)
 
@@ -275,13 +272,9 @@ class Downloader:
         for index, album_id in enumerate(label_info.albums, start=1):
             #artist_name = label_info.albums[index].artists.name #ADDED THIS LINE
             #LabelInfo(label_name='Scott Sullivan', names=['Scott Sullivan', 'Scott Sullivan', 'Scott Sullivan'], albums=['hoak2xlwzetha', 'vc8yy71pyzqna', 'xi8jvww76oahc'], album_extra_kwargs={}, tracks=[], track_extra_kwargs={})
-            artist_name = label_info.names[index]
+            artist_name = label_info.names[index-1]
 
             print(artist_name) #TESTING
-
-            json_object = json.dumps(artist_name, indent=4)
-            with open("artist_name.json", "w") as outfile:
-                outfile.write(json_object)
 
             print()
             self.print(f'Album {index}/{number_of_albums}', drop_level=1)
