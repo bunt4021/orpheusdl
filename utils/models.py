@@ -314,6 +314,15 @@ class ArtistInfo:
 
 
 @dataclass
+class LabelInfo:
+    name: str
+    albums: Optional[list] = field(default_factory=list)
+    album_extra_kwargs: Optional[dict] = field(default_factory=dict)
+    tracks: Optional[list] = field(default_factory=list)
+    track_extra_kwargs: Optional[dict] = field(default_factory=dict)
+
+
+@dataclass
 class PlaylistInfo:
     name: str
     creator: str
