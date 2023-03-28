@@ -248,9 +248,14 @@ class Downloader:
             self.download_track(album_info.tracks[0], album_location=path, number_of_tracks=1, main_artist=artist_name, indent_level=indent_level, extra_kwargs=album_info.track_extra_kwargs)
 
         return album_info.tracks
-    def download_label(self, artist_id, extra_kwargs={}): #TODO
+    def download_label(self, label_id, extra_kwargs={}): #TODO
         label_info: LabelInfo = self.service.get_label_info(label_id, **extra_kwargs)
         label_name = label_info.name
+
+        self.set_indent_number(1)
+
+        number_of_albums = len(artist_info.albums)
+        number_of_tracks = len(artist_info.tracks)
 
     def download_artist(self, artist_id, extra_kwargs={}):
         artist_info: ArtistInfo = self.service.get_artist_info(artist_id, self.global_settings['artist_downloading']['return_credited_albums'], **extra_kwargs)
