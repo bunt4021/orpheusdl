@@ -300,8 +300,11 @@ class Orpheus:
         ## Sessions
         sessions = pickle.load(open(self.session_storage_location, 'rb')) if os.path.exists(self.session_storage_location) else {}
 
+        login_storage_modified = False
+
         if not ('advancedmode' in sessions and 'modules' in sessions and sessions['advancedmode'] == advanced_login_mode):
             sessions = {'advancedmode': advanced_login_mode, 'modules':{}}
+            login_storage_modified = True
 
         # in format {advancedmode, modules: {modulename: {default, type, custom_data, sessions: [sessionname: {##}]}}}
         # where ## is 'custom_session' plus if jwt 'access, refresh' (+ emailhash in simple)
@@ -310,10 +313,16 @@ class Orpheus:
         for i in self.module_list:
             # Clear storage if type changed
             new_module_sessions[i] = sessions['modules'][i] if i in sessions['modules'] else {'selected':'default', 'sessions':{'default':{}}}
+            if i not in sessions['modules']:
+                login_storage_modified = True
 
-            if self.module_settings[i].global_storage_variables: new_module_sessions[i]['custom_data'] = \
+            if self.module_settings[i].global_storage_variables: 
+                old_data_len = len(new_module_sessions[i]['custom_data']) if 'custom_data' in new_module_sessions[i] else None
+                new_module_sessions[i]['custom_data'] = \
                 {j:new_module_sessions[i]['custom_data'][j] for j in self.module_settings[i].global_storage_variables \
                     if 'custom_data' in new_module_sessions[i] and j in new_module_sessions[i]['custom_data']}
+                if old_data_len is None or len(new_module_sessions[i]['custom_data']) != old_data_len:
+                    login_storage_modified = True
 
             for current_session in new_module_sessions[i]['sessions'].values():
                 # For simple login type only, as it does not apply to advanced login
@@ -325,6 +334,8 @@ class Orpheus:
                         clear_session = True
                 else:
                     clear_session = False
+                if current_session['clear_session'] != clear_session:
+                    login_storage_modified = True
                 current_session['clear_session'] = clear_session
 
                 if ModuleFlags.enable_jwt_system in self.module_settings[i].flags:
@@ -333,31 +344,47 @@ class Orpheus:
                         try:
                             time_left_until_refresh = json.loads(base64.b64decode(current_session['bearer'].split('.')[0]))['exp'] - true_current_utc_timestamp()
                             current_session['bearer'] = current_session['bearer'] if time_left_until_refresh > 0 else ''
+                            if not current_session['bearer']:
+                                login_storage_modified = True
                         except:
                             pass
                     else:
                         current_session['bearer'] = ''
                         current_session['refresh'] = ''
+                        login_storage_modified = True
                 else:
-                    if 'bearer' in current_session: current_session.pop('bearer')
-                    if 'refresh' in current_session: current_session.pop('refresh')
+                    if 'bearer' in current_session:
+                        current_session.pop('bearer')
+                        login_storage_modified = True
+                    if 'refresh' in current_session:
+                        current_session.pop('refresh')
+                        login_storage_modified = True
 
-                if self.module_settings[i].session_storage_variables: current_session['custom_data'] = \
+                if self.module_settings[i].session_storage_variables:
+                    old_data_len = len(current_session['custom_data']) if 'custom_data' in current_session else None
+                    current_session['custom_data'] = \
                     {j:current_session['custom_data'][j] for j in self.module_settings[i].session_storage_variables \
                         if 'custom_data' in current_session and j in current_session['custom_data'] and not clear_session}
-                elif 'custom_data' in current_session: current_session.pop('custom_data')
+                    if old_data_len is None or len(current_session['custom_data']) != old_data_len:
+                        login_storage_modified = True
+                elif 'custom_data' in current_session:
+                    current_session.pop('custom_data')
+                    login_storage_modified = True
 
-        pickle.dump({'advancedmode': advanced_login_mode, 'modules': new_module_sessions}, open(self.session_storage_location, 'wb'))
-        open(self.settings_location, 'w').write(json.dumps(new_settings, indent = 4, sort_keys = False))
+        if login_storage_modified:
+            pickle.dump({'advancedmode': advanced_login_mode, 'modules': new_module_sessions}, open(self.session_storage_location, 'wb'))
 
         if new_setting_detected:
+            open(self.settings_location, 'w').write(json.dumps(new_settings, indent = 4, sort_keys = False))
             print('New settings detected, or the configuration has been reset. Please update settings.json')
             exit()
 
 
 def orpheus_core_download(orpheus_session: Orpheus, media_to_download, third_party_modules, separate_download_module, output_path):
     downloader = Downloader(orpheus_session.settings['global'], orpheus_session.module_controls, oprinter, output_path)
-    os.makedirs('temp', exist_ok=True)
+    temp_UUID = f'temp{os.urandom(5).hex()}'
+    share_temp_UUID(temp_UUID)
+    os.makedirs(temp_UUID, exist_ok=True)
 
     for mainmodule, items in media_to_download.items():
         for media in items:
@@ -404,4 +431,4 @@ def orpheus_core_download(orpheus_session: Orpheus, media_to_download, third_par
                 else:
                     raise Exception(f'\tUnknown media type "{mediatype}"')
 
-    if os.path.exists('temp'): shutil.rmtree('temp')
+    if os.path.exists(temp_UUID): shutil.rmtree(temp_UUID)
