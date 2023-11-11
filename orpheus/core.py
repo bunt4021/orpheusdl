@@ -334,7 +334,7 @@ class Orpheus:
                         clear_session = True
                 else:
                     clear_session = False
-                if current_session['clear_session'] != clear_session:
+                if current_session.get('clear_session') != clear_session:
                     login_storage_modified = True
                 current_session['clear_session'] = clear_session
 
